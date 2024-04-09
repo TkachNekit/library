@@ -11,6 +11,9 @@ class BookGenre(models.Model):
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
 
+    def __str__(self):
+        return self.name
+
 
 class BookLanguage(models.Model):
     name = models.CharField(max_length=128, blank=False, null=False, unique=True)
@@ -18,6 +21,9 @@ class BookLanguage(models.Model):
     class Meta:
         verbose_name = "Язык"
         verbose_name_plural = "Языки"
+
+    def __str__(self):
+        return self.name
 
 
 class Author(models.Model):
@@ -29,6 +35,16 @@ class Author(models.Model):
         unique_together = ['first_name', 'last_name']
         verbose_name = "Автор"
         verbose_name_plural = "Авторы"
+
+    def get_full_name(self):
+        """
+        Return the first_name plus the last_name, with a space in between.
+        """
+        full_name = "%s %s" % (self.last_name, self.first_name)
+        return full_name.strip()
+
+    def __str__(self):
+        return self.get_full_name()
 
 
 class RatingField(models.FloatField):
@@ -42,14 +58,18 @@ class Book(models.Model):
     genre = models.ForeignKey(to=BookGenre, on_delete=models.CASCADE, null=False, blank=False)
     language = models.ForeignKey(to=BookLanguage, on_delete=models.CASCADE, null=False, blank=False)
     publication_date = models.DateField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
     number_of_pages = models.PositiveIntegerField(null=True, blank=True)
     rating = RatingField(null=True, blank=True)
     cover = models.ImageField(upload_to='books_covers', null=True, blank=True)
+    authors = models.ManyToManyField(Author, blank=False)
 
     class Meta:
         verbose_name = "Книга"
         verbose_name_plural = "Книги"
+
+    def __str__(self):
+        return f"{self.title} | {self.publication_date.year} | {self.language}"
 
 
 class BookCopy(models.Model):
@@ -59,3 +79,6 @@ class BookCopy(models.Model):
     class Meta:
         verbose_name = "Экземпляр книги"
         verbose_name_plural = "Экземпляры книг"
+
+    def __str__(self):
+        return f"{self.book.title } | {self.library.name}"

@@ -8,6 +8,9 @@ class City(models.Model):
         verbose_name = "Город"
         verbose_name_plural = "Города"
 
+    def __str__(self):
+        return self.name
+
 
 class Library(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False, unique=True)
@@ -16,3 +19,6 @@ class Library(models.Model):
     class Meta:
         verbose_name = "Библиотека"
         verbose_name_plural = "Библиотеки"
+
+    def __str__(self):
+        return f"{self.name} | {self.city.name}"
