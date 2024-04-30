@@ -1,13 +1,7 @@
 from rest_framework import serializers
 
+from archive.serializers import LibrarySerializer
 from books.models import Book, BookCopy, Author, BookLanguage, BookGenre
-
-
-class BookCopySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookCopy
-        fields = ['id', 'book', 'library']
-        read_only_fields = ['id']
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -40,4 +34,14 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id', 'title', 'genre', 'language', 'publication_date', 'description',
                   'number_of_pages', 'rating', 'cover', 'authors']
+        read_only_fields = ['id']
+
+
+class BookCopySerializer(serializers.ModelSerializer):
+    book = BookSerializer()
+    library = LibrarySerializer()
+
+    class Meta:
+        model = BookCopy
+        fields = ['id', 'book', 'library']
         read_only_fields = ['id']
