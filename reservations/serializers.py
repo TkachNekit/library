@@ -31,3 +31,5 @@ class ReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = ['id', 'book_copy', 'user', 'reservation_date', 'return_date', 'status']
         read_only_fields = ['id']
+
+

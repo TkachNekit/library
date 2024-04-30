@@ -7,7 +7,7 @@ from reservations.views import ReservationModelViewSet
 app_name = 'api'
 router = routers.DefaultRouter()
 router.register(r'books', BookViewSet)
-router.register(r'reservation', ReservationModelViewSet)
+router.register(r'reservations', ReservationModelViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
