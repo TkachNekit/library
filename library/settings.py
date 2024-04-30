@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     "books",
     "archive",
     "users",
-    "reservations"
+    "reservations",
+    "api",
+
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -130,3 +133,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Users
 AUTH_USER_MODEL = 'users.User'
+
+# REST
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
+}

@@ -8,11 +8,10 @@ from reservations.models import Reservation
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ("book_copy", "user", "reservation_date", "return_date", "status",)
     fields = ("id", "book_copy", "user", ("reservation_date", "return_date"), "status")
-    readonly_fields = ("id", "reservation_date",)
+    readonly_fields = ("id",)
 
 
 class ReservationInlineAdmin(admin.TabularInline):
     model = Reservation
     fields = ("book_copy", "user", ("reservation_date", "return_date"), "status")
-    readonly_fields = ("reservation_date",)
     extra = 0

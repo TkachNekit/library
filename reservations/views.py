@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from reservations.models import Reservation
+from reservations.serializers import ReservationSerializer
+
+
+class ReservationModelViewSet(ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer

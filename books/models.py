@@ -36,15 +36,22 @@ class Author(models.Model):
         verbose_name = "Автор"
         verbose_name_plural = "Авторы"
 
-    def get_full_name(self):
+    @property
+    def full_name(self):
         """
-        Return the first_name plus the last_name, with a space in between.
+            Return the first_name plus the last_name, with a space in between.
         """
         full_name = "%s %s" % (self.last_name, self.first_name)
         return full_name.strip()
 
+    @full_name.setter
+    def full_name(self, full_name: str):
+        fullname = full_name.split()
+        self.first_name = fullname[0]
+        self.last_name = full_name[1]
+
     def __str__(self):
-        return self.get_full_name()
+        return self.full_name
 
 
 class RatingField(models.FloatField):
@@ -81,4 +88,4 @@ class BookCopy(models.Model):
         verbose_name_plural = "Экземпляры книг"
 
     def __str__(self):
-        return f"{self.book.title } | {self.library.name}"
+        return f"{self.book.title} | {self.library.name} | {self.id}"
