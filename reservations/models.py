@@ -9,6 +9,15 @@ from books.models import BookCopy
 from users.models import User
 
 
+class ReservationManager(models.Manager):
+    def create(self, *args, **kwargs):
+        obj = self.model(**kwargs)
+        self._for_write = True
+        obj.full_clean()
+        obj.save(force_insert=True, using=self.db)
+        return obj
+
+
 class Reservation(models.Model):
     RESERVED = 0
     CANCELED = 1
@@ -26,6 +35,8 @@ class Reservation(models.Model):
     return_date = models.DateField(null=False, blank=False)
     status = models.SmallIntegerField(default=RESERVED, choices=STATUSES)
 
+    objects = ReservationManager()
+
     class Meta:
         verbose_name = "Бронирование"
         verbose_name_plural = "Бронирования"
@@ -33,10 +44,6 @@ class Reservation(models.Model):
     def __str__(self):
         return f"{self.book_copy.book.title} | {self.book_copy.library.name} | {self.reservation_date} | " \
                f"{self.return_date}"
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
 
     def full_clean(self, exclude=None, validate_unique=True, validate_constraints=True):
         super().full_clean()

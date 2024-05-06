@@ -23,13 +23,13 @@ class ChoiceField(serializers.ChoiceField):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    book_copy = BookCopySerializer()
-    user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
+    # book_copy = BookCopySerializer()
+    # user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
     status = ChoiceField(choices=Reservation.STATUSES)
 
     class Meta:
         model = Reservation
-        fields = ['id', 'book_copy', 'user', 'reservation_date', 'return_date', 'status']
+        fields = ['id', 'book_copy_id', 'user_id', 'reservation_date', 'return_date', 'status']
         read_only_fields = ['id']
 
 

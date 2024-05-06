@@ -26,9 +26,9 @@ class BookGenreSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    genre = serializers.SlugRelatedField(slug_field="name", queryset=BookGenre.objects.all())
-    language = serializers.SlugRelatedField(slug_field="name", queryset=BookLanguage.objects.all())
-    authors = serializers.SlugRelatedField(slug_field="full_name", many=True, queryset=Author.objects.all())
+    # genre = serializers.SlugRelatedField(slug_field="name", queryset=BookGenre.objects.all())
+    # language = serializers.SlugRelatedField(slug_field="name", queryset=BookLanguage.objects.all())
+    # authors = serializers.SlugRelatedField(slug_field="full_name", many=True, queryset=Author.objects.all())
 
     class Meta:
         model = Book
@@ -38,8 +38,8 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class BookCopySerializer(serializers.ModelSerializer):
-    book = BookSerializer()
-    library = LibrarySerializer()
+    # book = BookSerializer()
+    # library = LibrarySerializer()
 
     class Meta:
         model = BookCopy
