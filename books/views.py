@@ -1,10 +1,9 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 from django_filters import rest_framework as filters
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from books.filters import BookFilter
-from books.models import Book, BookGenre, BookLanguage, BookCopy, Library
+from books.models import Book, BookGenre, BookLanguage, BookCopy
 from books.serializers import BookSerializer, BookGenreSerializer, BookLanguageSerializer, BookCopySerializer
 
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from books.models import BookCopy
 from books.serializers import BookCopySerializer
 from reservations.models import Reservation
 from users.models import User
@@ -23,13 +24,13 @@ class ChoiceField(serializers.ChoiceField):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    # book_copy = BookCopySerializer()
-    # user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
-    status = ChoiceField(choices=Reservation.STATUSES)
+    book_copy = serializers.PrimaryKeyRelatedField(required=True, queryset=BookCopy.objects.all())
+    user = serializers.PrimaryKeyRelatedField(required=False, queryset=User.objects.all())
+    status = ChoiceField(choices=Reservation.STATUSES, required=False)
 
     class Meta:
         model = Reservation
-        fields = ['id', 'book_copy_id', 'user_id', 'reservation_date', 'return_date', 'status']
+        fields = ['id', 'book_copy', 'user', 'reservation_date', 'return_date', 'status']
         read_only_fields = ['id']
 
 

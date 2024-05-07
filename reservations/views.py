@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,19 +19,19 @@ class ReservationModelViewSet(ModelViewSet):
         return Reservation.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        # request.data['user'] = self.request.user.username
-        # request.data['status'] = "Зарезервирована"
-        # if not BookCopy.objects.filter(id=request.data['book_copy']).exists():
-        #     return Response("In book_copy should be represented book copy id.", status.HTTP_404_NOT_FOUND)
-        # request.data['book_copy'] = BookCopySerializer(instance=BookCopy.objects.get(id=request.data['book_copy'])).data
-        # print(request.data)
-        serializer = self.get_serializer(data=request.data)
+        try:
+            user_id = self.request.user.id
+            request.data['user'] = user_id
+            serializer = self.get_serializer(data=request.data)
 
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except ValidationError as e:
+            return Response(e, status.HTTP_400_BAD_REQUEST)
 
-    def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        return self.update(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        data = super(ReservationModelViewSet, self).list(request, *args, **kwargs)
+        return data
+
