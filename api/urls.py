@@ -12,7 +12,7 @@ router.register(r'reservations', ReservationModelViewSet)
 router.register(r'genres', GenreViewSet)
 router.register(r'languages', LanguageViewSet)
 router.register(r'bookcopies', BookCopyViewSet)
-router.register(r'libraries', LibraryViewSet)
+router.register(r'libraries', LibraryViewSet, basename='library')
 
 urlpatterns = [
     path("", include(router.urls)),

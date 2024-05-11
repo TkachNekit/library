@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from archive.models import Library
+from books.validators import validate_not_future_date
 
 
 class BookGenre(models.Model):
@@ -48,7 +49,7 @@ class Author(models.Model):
     def full_name(self, full_name: str):
         fullname = full_name.split()
         self.first_name = fullname[0]
-        self.last_name = full_name[1]
+        self.last_name = fullname[1]
 
     def __str__(self):
         return self.full_name
@@ -60,28 +61,40 @@ class RatingField(models.FloatField):
         super().__init__(*args, **kwargs)
 
 
+class BookManager(models.Manager):
+    def create(self, *args, **kwargs):
+        obj = self.model(**kwargs)
+        self._for_write = True
+        obj.full_clean()
+        obj.save(force_insert=True, using=self.db)
+        return obj
+
+
 class Book(models.Model):
     title = models.CharField(max_length=256, blank=False, null=False)
     genre = models.ForeignKey(to=BookGenre, on_delete=models.CASCADE, null=False, blank=False)
     language = models.ForeignKey(to=BookLanguage, on_delete=models.CASCADE, null=False, blank=False)
-    publication_date = models.DateField()
+    publication_date = models.DateField(validators=[validate_not_future_date])
     description = models.TextField(blank=True)
     number_of_pages = models.PositiveIntegerField(null=True, blank=True)
     rating = RatingField(null=True, blank=True)
     cover = models.ImageField(upload_to='books_covers', null=True, blank=True)
     authors = models.ManyToManyField(Author, blank=False)
 
+    objects = BookManager()
+
     class Meta:
         verbose_name = "Книга"
         verbose_name_plural = "Книги"
+        unique_together = ['title', 'publication_date']
 
     def __str__(self):
         return f"{self.title} | {self.publication_date.year} | {self.language}"
 
 
 class BookCopy(models.Model):
-    book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
-    library = models.ForeignKey(to=Library, on_delete=models.CASCADE)
+    book = models.ForeignKey(to=Book, on_delete=models.CASCADE, null=False, blank=False)
+    library = models.ForeignKey(to=Library, on_delete=models.CASCADE, null=False, blank=False)
 
     class Meta:
         verbose_name = "Экземпляр книги"

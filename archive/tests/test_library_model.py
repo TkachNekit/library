@@ -1,5 +1,3 @@
-Below is a
-pytest
 import pytest
 from django.db import IntegrityError
 from archive.models import Library, City
