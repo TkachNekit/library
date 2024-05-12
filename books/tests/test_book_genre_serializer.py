@@ -1,4 +1,5 @@
 import pytest
+
 from books.models import BookLanguage
 from books.serializers import BookLanguageSerializer
 
@@ -6,7 +7,7 @@ from books.serializers import BookLanguageSerializer
 @pytest.mark.django_db
 class TestBookLanguageSerializer:
     def test_valid_serializer(self):
-        data = {'name': 'English'}
+        data = {"name": "English"}
         serializer = BookLanguageSerializer(data=data)
         assert serializer.is_valid()
 
@@ -14,44 +15,44 @@ class TestBookLanguageSerializer:
         data = {}
         serializer = BookLanguageSerializer(data=data)
         assert not serializer.is_valid()
-        assert 'name' in serializer.errors
+        assert "name" in serializer.errors
 
     def test_blank_name(self):
-        data = {'name': ''}
+        data = {"name": ""}
         serializer = BookLanguageSerializer(data=data)
         assert not serializer.is_valid()
-        assert 'name' in serializer.errors
+        assert "name" in serializer.errors
 
     def test_unique_name(self):
-        BookLanguage.objects.create(name='English')
-        data = {'name': 'English'}
+        BookLanguage.objects.create(name="English")
+        data = {"name": "English"}
         serializer = BookLanguageSerializer(data=data)
         assert not serializer.is_valid()
-        assert 'name' in serializer.errors
+        assert "name" in serializer.errors
 
     def test_name_length(self):
-        data = {'name': 'A' * 129}  # Exceeds max length
+        data = {"name": "A" * 129}  # Exceeds max length
         serializer = BookLanguageSerializer(data=data)
         assert not serializer.is_valid()
-        assert 'name' in serializer.errors
+        assert "name" in serializer.errors
 
     def test_create_language(self):
-        data = {'name': 'French'}
+        data = {"name": "French"}
         serializer = BookLanguageSerializer(data=data)
         assert serializer.is_valid()
         instance = serializer.save()
-        assert instance.name == 'French'
+        assert instance.name == "French"
 
     def test_update_language(self):
-        language = BookLanguage.objects.create(name='English')
-        data = {'name': 'Spanish'}
+        language = BookLanguage.objects.create(name="English")
+        data = {"name": "Spanish"}
         serializer = BookLanguageSerializer(language, data=data)
         assert serializer.is_valid()
         instance = serializer.save()
-        assert instance.name == 'Spanish'
+        assert instance.name == "Spanish"
 
     def test_invalid_serializer(self):
-        data = {'invalid_field': 'value'}  # Invalid field provided
+        data = {"invalid_field": "value"}  # Invalid field provided
         serializer = BookLanguageSerializer(data=data)
         assert not serializer.is_valid()
-        assert 'name' in serializer.errors
+        assert "name" in serializer.errors

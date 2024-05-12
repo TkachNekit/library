@@ -1,5 +1,6 @@
 import pytest
 from django.db.utils import IntegrityError
+
 from books.models import Author
 
 

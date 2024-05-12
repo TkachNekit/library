@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from archive.models import Library, City
+from archive.models import City, Library
 
 # Register your models here.
 admin.site.register(City)

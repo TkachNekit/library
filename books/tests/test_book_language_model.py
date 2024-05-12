@@ -1,5 +1,6 @@
 import pytest
 from django.db.utils import IntegrityError
+
 from books.models import BookLanguage
 
 
@@ -15,4 +16,6 @@ class TestBookLanguageModel:
         name = "Spanish"
         BookLanguage.objects.create(name=name)
         with pytest.raises(IntegrityError):
-            BookLanguage.objects.create(name=name)  # Attempt to create another language with the same name
+            BookLanguage.objects.create(
+                name=name
+            )  # Attempt to create another language with the same name

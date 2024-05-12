@@ -1,9 +1,8 @@
 import datetime
-from datetime import date
 
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from books.models import BookCopy
 from users.models import User
@@ -24,9 +23,9 @@ class Reservation(models.Model):
     RETURNED = 2
 
     STATUSES = (
-        (RESERVED, 'Зарезервирована'),
-        (CANCELED, 'Отменена'),
-        (RETURNED, 'Возвращена'),
+        (RESERVED, "Зарезервирована"),
+        (CANCELED, "Отменена"),
+        (RETURNED, "Возвращена"),
     )
 
     book_copy = models.ForeignKey(to=BookCopy, on_delete=models.CASCADE)
@@ -42,22 +41,38 @@ class Reservation(models.Model):
         verbose_name_plural = "Бронирования"
 
     def __str__(self):
-        return f"{self.book_copy.book.title} | {self.book_copy.library.name} | {self.reservation_date} | " \
-               f"{self.return_date}"
+        return (
+            f"{self.book_copy.book.title} | {self.book_copy.library.name} | {self.reservation_date} | "
+            f"{self.return_date}"
+        )
 
     def full_clean(self, exclude=None, validate_unique=True, validate_constraints=True):
         super().full_clean()
         # Reservation > 1 day
         if self.reservation_date >= self.return_date:
-            raise ValidationError(_("Return date cannot be earlier than 1 after reservation"))
+            raise ValidationError(
+                _("Return date cannot be earlier than 1 after reservation")
+            )
 
         # Book is already booked on these dates
-        current_book_reservations = Reservation.objects.filter(status=self.RESERVED, book_copy=self.book_copy)
+        current_book_reservations = Reservation.objects.filter(
+            status=self.RESERVED, book_copy=self.book_copy
+        )
         for reservation in current_book_reservations:
-            take_date, return_date = reservation.reservation_date, reservation.return_date
-            if (take_date < self.return_date <= return_date) or (take_date <= self.reservation_date < return_date) or \
-                    (self.return_date > return_date and self.reservation_date < take_date):
-                raise ValidationError(_("There is already reservation for this book on these dates"))
+            take_date, return_date = (
+                reservation.reservation_date,
+                reservation.return_date,
+            )
+            if (
+                (take_date < self.return_date <= return_date)
+                or (take_date <= self.reservation_date < return_date)
+                or (
+                    self.return_date > return_date and self.reservation_date < take_date
+                )
+            ):
+                raise ValidationError(
+                    _("There is already reservation for this book on these dates")
+                )
 
         # Can't take book for more than 2 weeks
         if (self.return_date - self.reservation_date) > datetime.timedelta(days=14):

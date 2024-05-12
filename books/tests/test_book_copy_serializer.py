@@ -1,10 +1,10 @@
 from datetime import date
 
 import pytest
-from django.db.utils import IntegrityError
 
 from archive.models import City
-from books.models import Book, BookCopy, Library, BookGenre, BookLanguage, Author
+from books.models import (Author, Book, BookCopy, BookGenre, BookLanguage,
+                          Library)
 from books.serializers import BookCopySerializer
 
 
@@ -44,20 +44,20 @@ class TestBookCopySerializer:
     def test_valid_serializer(self):
         book_copy = self.create_book_copy()
         data = BookCopySerializer(instance=book_copy).data
-        data['book'] = None  # Modify book to test serializer
+        data["book"] = None  # Modify book to test serializer
         serializer = BookCopySerializer(data=data)
         assert not serializer.is_valid()
 
     def test_missing_required_fields(self):
         serializer = BookCopySerializer(data={})
         assert not serializer.is_valid()
-        assert 'book' in serializer.errors
-        assert 'library' in serializer.errors
+        assert "book" in serializer.errors
+        assert "library" in serializer.errors
 
     def test_create_book_copy(self):
         book = TestBookCopySerializer.create_book()
         library = TestBookCopySerializer.create_library()
-        serializer = BookCopySerializer(data={'book': book.id, 'library': library.id})
+        serializer = BookCopySerializer(data={"book": book.id, "library": library.id})
         assert serializer.is_valid()
         instance = serializer.save()
         assert instance.book.title == "Test Book"
@@ -65,9 +65,9 @@ class TestBookCopySerializer:
 
     def test_invalid_book_copy(self):
         book = TestBookCopySerializer.create_book()
-        serializer = BookCopySerializer(data={'book': book.id, 'library': None})
+        serializer = BookCopySerializer(data={"book": book.id, "library": None})
         assert not serializer.is_valid()
-        assert 'library' in serializer.errors
+        assert "library" in serializer.errors
 
     def test_unique_book_copy(self):
         book = TestBookCopySerializer.create_book()
@@ -85,5 +85,7 @@ class TestBookCopySerializer:
 
     def test_book_copy_str_representation(self):
         book_copy = self.create_book_copy()
-        assert str(book_copy) == f"{book_copy.book.title} | {book_copy.library.name} | {book_copy.id}"
-
+        assert (
+            str(book_copy)
+            == f"{book_copy.book.title} | {book_copy.library.name} | {book_copy.id}"
+        )

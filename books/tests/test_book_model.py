@@ -1,9 +1,10 @@
-import pytest
 from datetime import date, timedelta
+
+import pytest
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from books.models import Book, BookGenre, BookLanguage, Author
+from books.models import Author, Book, BookGenre, BookLanguage
 
 
 @pytest.mark.django_db
@@ -42,7 +43,12 @@ class TestBookModel:
         genre = BookGenre.objects.create(name="Fiction")
         language = BookLanguage.objects.create(name="English")
         publication_date = date(2022, 1, 1)
-        book = Book.objects.create(title=title, genre=genre, language=language, publication_date=publication_date)
+        book = Book.objects.create(
+            title=title,
+            genre=genre,
+            language=language,
+            publication_date=publication_date,
+        )
         assert str(book) == f"{title} | {publication_date.year} | {language}"
 
     def test_invalid_rating(self):
@@ -57,7 +63,7 @@ class TestBookModel:
                 genre=genre,
                 language=language,
                 publication_date=publication_date,
-                rating=15  # Invalid rating
+                rating=15,  # Invalid rating
             )
 
     def test_add_and_remove_authors(self):
@@ -66,7 +72,12 @@ class TestBookModel:
         author1 = Author.objects.create(first_name="Jane", last_name="Doe")
         author2 = Author.objects.create(first_name="Jack", last_name="Smith")
         publication_date = date(2022, 1, 1)
-        book = Book.objects.create(title="Test Book", genre=genre, language=language, publication_date=publication_date)
+        book = Book.objects.create(
+            title="Test Book",
+            genre=genre,
+            language=language,
+            publication_date=publication_date,
+        )
         book.authors.add(author1)
         book.authors.add(author2)
         assert author1 in book.authors.all()
@@ -92,7 +103,12 @@ class TestBookModel:
         language = BookLanguage.objects.create(name="English")
         author = Author.objects.create(first_name="John", last_name="Doe")
         publication_date = date(2022, 1, 1)
-        book = Book.objects.create(title="Test Book", genre=genre, language=language, publication_date=publication_date)
+        book = Book.objects.create(
+            title="Test Book",
+            genre=genre,
+            language=language,
+            publication_date=publication_date,
+        )
         book.authors.add(author)
 
         new_title = "Updated Title"
@@ -110,9 +126,24 @@ class TestBookModel:
         language1 = BookLanguage.objects.create(name="English")
         language2 = BookLanguage.objects.create(name="French")
         publication_date = date(2022, 1, 1)
-        Book.objects.create(title="Book 1", genre=genre, language=language1, publication_date=publication_date)
-        Book.objects.create(title="Book 2", genre=genre, language=language2, publication_date=publication_date)
-        Book.objects.create(title="Book 3", genre=genre, language=language1, publication_date=publication_date)
+        Book.objects.create(
+            title="Book 1",
+            genre=genre,
+            language=language1,
+            publication_date=publication_date,
+        )
+        Book.objects.create(
+            title="Book 2",
+            genre=genre,
+            language=language2,
+            publication_date=publication_date,
+        )
+        Book.objects.create(
+            title="Book 3",
+            genre=genre,
+            language=language1,
+            publication_date=publication_date,
+        )
         books_in_english = Book.objects.filter(language=language1)
         assert books_in_english.count() == 2
 
@@ -121,9 +152,19 @@ class TestBookModel:
         language = BookLanguage.objects.create(name="English")
         publication_date1 = date(2022, 1, 1)
         publication_date2 = date(2021, 1, 1)
-        Book.objects.create(title="Book 1", genre=genre, language=language, publication_date=publication_date1)
-        Book.objects.create(title="Book 2", genre=genre, language=language, publication_date=publication_date2)
-        books_sorted_by_date = Book.objects.order_by('publication_date')
+        Book.objects.create(
+            title="Book 1",
+            genre=genre,
+            language=language,
+            publication_date=publication_date1,
+        )
+        Book.objects.create(
+            title="Book 2",
+            genre=genre,
+            language=language,
+            publication_date=publication_date2,
+        )
+        books_sorted_by_date = Book.objects.order_by("publication_date")
         assert books_sorted_by_date[0].title == "Book 2"
 
     def test_future_publication_date(self):
@@ -159,7 +200,12 @@ class TestBookModel:
         genre = BookGenre.objects.create(name="Fiction")
         language = BookLanguage.objects.create(name="English")
         publication_date = date(2022, 1, 1)
-        Book.objects.create(title="Test Book", genre=genre, language=language, publication_date=publication_date)
+        Book.objects.create(
+            title="Test Book",
+            genre=genre,
+            language=language,
+            publication_date=publication_date,
+        )
 
         # Attempt to create a book with a non-unique title
         with pytest.raises(ValidationError):

@@ -5,8 +5,6 @@ from archive.models import Library
 from archive.serializers import LibrarySerializer
 
 
-class LibraryViewSet(mixins.RetrieveModelMixin,
-                     mixins.ListModelMixin,
-                     GenericViewSet):
+class LibraryViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     queryset = Library.objects.all()
     serializer_class = LibrarySerializer

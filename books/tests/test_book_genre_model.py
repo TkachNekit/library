@@ -1,5 +1,6 @@
 import pytest
 from django.db.utils import IntegrityError
+
 from books.models import BookGenre
 
 
@@ -15,4 +16,6 @@ class TestBookGenreModel:
         name = "Science Fiction"
         BookGenre.objects.create(name=name)
         with pytest.raises(IntegrityError):
-            BookGenre.objects.create(name=name)  # Attempt to create another genre with the same name
+            BookGenre.objects.create(
+                name=name
+            )  # Attempt to create another genre with the same name

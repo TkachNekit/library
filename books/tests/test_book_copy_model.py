@@ -1,17 +1,28 @@
+from datetime import date
+
 import pytest
 from django.db import IntegrityError
+
 from archive.models import City
-from books.models import BookCopy, Book, Library, BookGenre, BookLanguage
-from datetime import date
+from books.models import Book, BookCopy, BookGenre, BookLanguage, Library
 
 
 @pytest.fixture
 def book_factory():
-    def create_book(title="Test Book", genre_name="Fiction", language_name="English",
-                    publication_date=date(2022, 1, 1)):
+    def create_book(
+        title="Test Book",
+        genre_name="Fiction",
+        language_name="English",
+        publication_date=date(2022, 1, 1),
+    ):
         genre = BookGenre.objects.create(name=genre_name)
         language = BookLanguage.objects.create(name=language_name)
-        book = Book.objects.create(title=title, genre=genre, language=language, publication_date=publication_date)
+        book = Book.objects.create(
+            title=title,
+            genre=genre,
+            language=language,
+            publication_date=publication_date,
+        )
         city = City.objects.create(name="test city")
         library = Library.objects.create(name="Test Library", city=city)
         book_copy = BookCopy.objects.create(book=book, library=library)

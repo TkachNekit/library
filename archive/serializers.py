@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from archive.models import Library, City
+from archive.models import City, Library
 
 
 class LibrarySerializer(serializers.ModelSerializer):
@@ -8,5 +8,5 @@ class LibrarySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Library
-        fields = ['id', 'name', 'city']
-        read_only_fields = ['id']
+        fields = ["id", "name", "city"]
+        read_only_fields = ["id"]

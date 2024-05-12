@@ -8,16 +8,20 @@ User = get_user_model()
 @pytest.mark.django_db
 class TestUserModel:
     def test_user_creation(self):
-        user = User.objects.create(username='test_user', email='test@example.com', phone_number='1234567890')
-        assert user.username == 'test_user'
-        assert user.email == 'test@example.com'
-        assert user.phone_number == '1234567890'
+        user = User.objects.create(
+            username="test_user", email="test@example.com", phone_number="1234567890"
+        )
+        assert user.username == "test_user"
+        assert user.email == "test@example.com"
+        assert user.phone_number == "1234567890"
         assert not user.is_verified_email
         assert user.date_of_birth is None
 
     def test_invalid_phone_number(self):
         with pytest.raises(ValidationError):
-            user = User.objects.create(username='test_user', email='test@example.com', phone_number='invalid')
+            user = User.objects.create(
+                username="test_user", email="test@example.com", phone_number="invalid"
+            )
             user.full_clean()
 
     # def test_image_upload(self):
